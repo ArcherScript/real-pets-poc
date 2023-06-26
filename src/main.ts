@@ -37,11 +37,16 @@ smileInnerSprite.width = 600;
 smileInnerSprite.height = 600;
 
 backText.anchor.set(0.5);
-backText.position.set(300, 300);
+backText.position.set(400, 400);
+smileSprite.anchor.set(0.5);
+smileSprite.position.set(400, 400);
+smileInnerSprite.anchor.set(0.5);
+smileInnerSprite.position.set(400, 400);
+
 backText.angle = seed;
 
 backText2.anchor.set(0.5);
-backText2.position.set(300, 300);
+backText2.position.set(400, 400);
 backText2.angle = seed;
 
 smileSprite.blendMode = PIXI.BLEND_MODES.DST_ATOP;
@@ -51,3 +56,12 @@ app.stage.addChild(backText2);
 app.stage.addChild(smileInnerSprite);
 app.stage.addChild(backText);
 app.stage.addChild(smileSprite);
+
+const seedTextStyle = new PIXI.TextStyle({
+  fontFamily: "Arial",
+  fontSize: 36,
+  fill: "white",
+});
+
+const seedText = new PIXI.Text(`Seed: ${seed}`, seedTextStyle);
+app.stage.addChild(seedText);
