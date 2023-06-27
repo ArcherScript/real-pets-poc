@@ -1,14 +1,11 @@
-varying vec2 vTextureCoord;
-uniform sampler2D uSampler;
-uniform float delta;
-void main(void)
-{
-  vec4 color = texture2D(uSampler, vTextureCoord);
-  if(color.a == 0){
-  color.r = 1.0;
-  color.g = 1.0;
-  color.b = 1.0;
-  color.a = 1.0;
-  gl_FragColor = color;
+ precision mediump float;
+
+  varying vec2 vTextureCoord;
+  uniform sampler2D uSampler;
+
+  void main() {
+    vec2 p = floor(vTextureCoord * vec2(8.0));
+    vec2 uv = (p + 0.5) / vec2(8.0);
+
+    gl_FragColor = texture2D(uSampler, uv);
   }
-}

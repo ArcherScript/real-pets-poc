@@ -7,55 +7,53 @@ import shinyGold from "/gold_foil.jpg";
 import vertShad from "/vertShad.txt";
 import fragShad from "/fragShad.txt";
 
+const createPet = (
+  outline: string,
+  outlineMaterial: string,
+  fill: string,
+  fillMaterial: string
+): PIXI.Sprite[] => {
+  const outlineSprite = PIXI.Sprite.from(outline);
+  const outlineMatSprite = PIXI.Sprite.from(outlineMaterial);
+  const fillSprite = PIXI.Sprite.from(fill);
+  const fillMatSprite = PIXI.Sprite.from(fillMaterial);
+  const pets = [outlineSprite, outlineMatSprite, fillSprite, fillMatSprite];
+  for (const pet of pets) {
+    pet.width = 600;
+    pet.height = 600;
+    pet.anchor.set(0.5);
+    pet.position.set(400, 400);
+  }
+
+  pets[1].mask = pets[0];
+  pets[3].mask = pets[2];
+
+  return [outlineSprite, outlineMatSprite, fillSprite, fillMatSprite].reverse();
+};
+
 const app = new PIXI.Application<HTMLCanvasElement>({
   background: "#1099bb",
   width: 800,
   height: 800,
 });
-PIXI.settings.PREFER_ENV = PIXI.ENV.WEBGL2;
 
-const fragShadLod = await PIXI.Assets.load<string>(fragShad);
-const vertShadLod = await PIXI.Assets.load<string>(vertShad);
+// const fragShadLod = await PIXI.Assets.load<string>(fragShad);
+// const vertShadLod = await PIXI.Assets.load<string>(vertShad);
 
 // generate random seed
 const seed = Math.max(1, Math.random() * 360);
+const seed2 = Math.max(1, 360 * Math.random());
 
 // Adding the application's view to the DOM
 document.body.appendChild(app.view);
 
-const smileSprite = PIXI.Sprite.from(smile);
-const backText = PIXI.Sprite.from(shiny);
-const backText2 = PIXI.Sprite.from(shinyGold);
-const smileInnerSprite = PIXI.Sprite.from(smileInner);
-backText.width = 600;
-backText.height = 600;
-backText2.width = 600;
-backText2.height = 600;
-smileSprite.width = 600;
-smileSprite.height = 600;
-smileInnerSprite.width = 600;
-smileInnerSprite.height = 600;
+const pets = createPet(smile, shiny, smileInner, shinyGold);
+pets[0].rotation = seed;
+pets[2].rotation = seed2;
 
-backText.anchor.set(0.5);
-backText.position.set(400, 400);
-smileSprite.anchor.set(0.5);
-smileSprite.position.set(400, 400);
-smileInnerSprite.anchor.set(0.5);
-smileInnerSprite.position.set(400, 400);
-
-backText.angle = seed;
-
-backText2.anchor.set(0.5);
-backText2.position.set(400, 400);
-backText2.angle = seed;
-
-smileSprite.blendMode = PIXI.BLEND_MODES.DST_ATOP;
-backText.mask = smileSprite;
-backText2.mask = smileInnerSprite;
-app.stage.addChild(backText2);
-app.stage.addChild(smileInnerSprite);
-app.stage.addChild(backText);
-app.stage.addChild(smileSprite);
+for (const pet of pets) {
+  app.stage.addChild(pet);
+}
 
 const seedTextStyle = new PIXI.TextStyle({
   fontFamily: "Arial",
@@ -63,5 +61,8 @@ const seedTextStyle = new PIXI.TextStyle({
   fill: "white",
 });
 
-const seedText = new PIXI.Text(`Seed: ${seed}`, seedTextStyle);
-app.stage.addChild(seedText);
+const outlineSeedText = new PIXI.Text(`Outline Seed: ${seed}`, seedTextStyle);
+const fillSeedText = new PIXI.Text(`Fill Seed: ${seed2}`, seedTextStyle);
+fillSeedText.position.set(0, 50);
+app.stage.addChild(outlineSeedText);
+app.stage.addChild(fillSeedText);
