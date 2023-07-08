@@ -1,34 +1,39 @@
 import "./style.css";
 import * as PIXI from "pixi.js";
-import smile from "/smile.svg";
-import smileInner from "/smile_inner.svg";
+import MumbyOutline from "/MumbyOutline.svg";
+import Mumby from "/Mumby.svg";
 import shiny from "/texture.jpg";
 import shinyGold from "/gold_foil.jpg";
 import vertShad from "/vertShad.txt";
 import fragShad from "/fragShad.txt";
 
-const createPet = (
-  outline: string,
-  outlineMaterial: string,
+const resizeAndCenter = (material: PIXI.Sprite, size: number): PIXI.Sprite => {
+  material.width = size;
+  material.height = size;
+  material.anchor.set(0.5);
+  material.position.set(400, 400);
+
+  return material;
+};
+
+const addAndApplyMask = (
   fill: string,
-  fillMaterial: string
+  fillMaterial: string,
+  seed?: number
 ): PIXI.Sprite[] => {
-  const outlineSprite = PIXI.Sprite.from(outline);
-  const outlineMatSprite = PIXI.Sprite.from(outlineMaterial);
   const fillSprite = PIXI.Sprite.from(fill);
-  const fillMatSprite = PIXI.Sprite.from(fillMaterial);
-  const pets = [outlineSprite, outlineMatSprite, fillSprite, fillMatSprite];
-  for (const pet of pets) {
-    pet.width = 600;
-    pet.height = 600;
-    pet.anchor.set(0.5);
-    pet.position.set(400, 400);
+  const fillMaterialSprite = PIXI.Sprite.from(fillMaterial);
+  const materialsToApply = [fillSprite, fillMaterialSprite];
+  const fillSpriteRes = resizeAndCenter(fillSprite, 600);
+  const fillMaterialSpriteRes = resizeAndCenter(fillMaterialSprite, 800);
+
+  fillMaterialSpriteRes.mask = fillSpriteRes;
+
+  if (seed) {
+    fillMaterialSpriteRes.rotation = seed;
   }
 
-  pets[1].mask = pets[0];
-  pets[3].mask = pets[2];
-
-  return [outlineSprite, outlineMatSprite, fillSprite, fillMatSprite].reverse();
+  return materialsToApply;
 };
 
 const app = new PIXI.Application<HTMLCanvasElement>({
@@ -47,14 +52,14 @@ const seed2 = Math.max(1, 360 * Math.random());
 // Adding the application's view to the DOM
 document.body.appendChild(app.view);
 
-const pets = createPet(smile, shiny, smileInner, shinyGold);
-pets[0].rotation = seed;
-pets[2].rotation = seed2;
+const pets = addAndApplyMask(MumbyOutline, shiny, seed);
 
-for (const pet of pets) {
-  app.stage.addChild(pet);
-}
+app.stage.addChild(pets[1]);
+app.stage.addChild(pets[0]);
 
+const outline = PIXI.Sprite.from(Mumby);
+const resizedOutline = resizeAndCenter(outline, 600);
+app.stage.addChild(resizedOutline);
 const seedTextStyle = new PIXI.TextStyle({
   fontFamily: "Arial",
   fontSize: 36,
