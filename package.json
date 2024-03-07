@@ -9,10 +9,10 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "typescript": "^5.0.2",
-    "vite": "^4.3.9"
+    "typescript": "^5.4.2",
+    "vite": "^5.1.5"
   },
   "dependencies": {
-    "pixi.js": "^7.2.4"
+    "pixi.js": "^7.4.0"
   }
 }
